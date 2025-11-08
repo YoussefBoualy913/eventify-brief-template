@@ -18,7 +18,26 @@ let archive = [];
     });
     screen.forEach(screenvisible => {
         if(btnsidebar.dataset.screen==screenvisible.dataset.screen){
+            const pagetitle=document.querySelector('.page-title');
+            const pagesubtitle=document.querySelector('.page-subtitle');
             screenvisible.classList.add("is-visible");
+           
+             if(screenvisible.dataset.screen=="stats"){
+               pagetitle.textContent="Statistics";
+               pagesubtitle.textContent="Overview of your events";
+            }
+            if(screenvisible.dataset.screen=="add"){
+               pagetitle.textContent="Add-event";
+               pagesubtitle.textContent="add  a new events";
+            }
+            if(screenvisible.dataset.screen=="list"){
+               pagetitle.textContent="Event";
+               pagesubtitle.textContent="list of your events";
+            }
+            if(screenvisible.dataset.screen=="archive"){
+               pagetitle.textContent="Archive";
+               pagesubtitle.textContent="archive of your events";
+            }
         }
     });
     
@@ -160,7 +179,7 @@ let archive = [];
 
 
     events.push(event);
-    addeventtolist(events);
+   
    document.getElementById('event-form').reset();
 }
 document.getElementById('event-form').addEventListener('submit', handleFormSubmit);
@@ -195,19 +214,22 @@ function removeVariantRow() {
     const variantrow__remove =document.querySelector('.variant-row__remove')
     variantrow__remove.parentElement.remove();
 }
-// add event to event list 
-function addeventtolist(evnts){
-   const tablebody =document.querySelector('.table__body');
-   console.log(evnts[(evnts.length)-1].title);
 
-    
+//event list funtion 
+
+function eventlist(evnts){
+   const tablebody =document.querySelector('.table__body');
+   console.log("hloo");
+tablebody.innerHTML='';
+let contur=1;
+ evnts.forEach(evt =>{
       tablebody.innerHTML+=`
     <tr class="table__row" data-event-id="1">
-         <td>1</td>
-        <td>${evnts[(evnts.length)-1].title}</td>
-         <td>${evnts[(evnts.length)-1].seats}</td>
-         <td>$${evnts[(evnts.length)-1].price}</td>
-        <td><span class="badge">${evnts[(evnts.length)-1]. variantrow.length}</span></td>
+         <td>${contur}</td>
+        <td>${evt.title}</td>
+         <td>${evt.seats}</td>
+         <td>$${evt.price}</td>
+        <td><span class="badge">${evt. variantrow.length}</span></td>
          <td>
             <button class="btn btn--small" data-action="details" data-event-id="1">Details</button>
             <button class="btn btn--small" data-action="edit" data-event-id="1">Edit</button>
@@ -215,6 +237,36 @@ function addeventtolist(evnts){
         </td>
      </tr> 
    `
+   contur++;
+ })
   
 }
+ document.getElementById('sidebar-btn').addEventListener('click',()=>{
+    eventlist(events);
+ });
+ function eventDelete(){
+    const Delete=document.querySelectorAll('[data-action="archive" ]');
+    Delete.forEach(evt =>{
+        evt.addEventListener('click',()=>{
 
+             
+
+        })
+    }
+
+    )
+ }
+//add function renderStats
+ function renderStats() {
+    // Calculate from events array:
+    const totalEvents = events.length;
+    const totalSeats = events.reduce((sum, e) => sum + Number(e.seats), 0);
+    const totalPrice = events.reduce((sum, e) => sum + Number(e.price )*Number( e.seats), 0);
+    
+    // Update DOM:
+    document.getElementById('stat-total-events').textContent =totalEvents;
+    document.getElementById('stat-total-seats').textContent=totalSeats;
+    document.getElementById('stat-total-price').textContent =totalPrice.toFixed(2);
+}
+
+const statsbtn=document.getElementById("stats-btn").addEventListener('click',renderStats);
