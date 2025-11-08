@@ -1,6 +1,6 @@
 let events = [];
 let archive = [];
-     
+// switchScreen function 
    function switchScreen(){
    const btn=document.querySelectorAll('.sidebar__btn')
     const screen=document.querySelectorAll('.screen')
@@ -27,14 +27,9 @@ let archive = [];
   });
 }
  switchScreen();
-
+// validation function 
  function handleFormSubmit(e) {
-    // TODO:
-    // 1. Prevent default
-    // 2. Validate form inputs
-    // 3. If valid: create new event object, add to events array, save data, reset form
-    // 4. If invalid: show errors in #form-errors
-
+    
     e.preventDefault();
     const eventtitle =document.querySelector('#event-title');
     const eventimage =document.querySelector('#event-image');
@@ -48,9 +43,6 @@ let archive = [];
     const regexprice=/^(0|[1-9]\d*)(\.\d{1,2})?$/
     const regexvariantrowvalue=/^-?(0|[1-9]\d*)(\.\d+)?$/
     
-    
-
-
     if(!regextitle.test(eventtitle.value)){
         document.querySelector('#form-errors').innerHTML="title invalide";
         document.querySelector('#form-errors').classList.remove('is-hidden')
@@ -103,7 +95,7 @@ let archive = [];
         return;
 
     }
-
+     let variants=[];
      const variantrow =document.querySelectorAll('.variant-row');
      for(const varint of variantrow){
         
@@ -112,6 +104,7 @@ let archive = [];
           const    variantrow__name=varint.querySelector('.variant-row__name') 
           const    variantrow__qty=varint.querySelector('.variant-row__qty') 
           const    variantrow__value=varint.querySelector('.variant-row__value') 
+          const    variantrow__type=varint.querySelector('.variant-row__type') 
           if(!regextitle.test(variantrow__name.value)){
         document.querySelector('#form-errors').innerHTML="variant_title invalide";
         document.querySelector('#form-errors').classList.remove('is-hidden')
@@ -143,38 +136,37 @@ let archive = [];
         return;
 
     }
+       const  variant={
+             varianttiile :variantrow__name.value,
+             varianQty :variantrow__qty.value,
+             variantvalue :variantrow__value.value,
+             varianttype :variantrow__type.value,
+        }
+        variants.push(variant);
  
           }
      }
-
-     
-     
-
-
-
-
     const event ={
-        title :eventtitle.value,
-        image :eventimage.value,
-        discription :eventdescription.value,
-        seats:eventseatsn.value,
-        price:eventprice.value
+        title: eventtitle.value,
+        image: eventimage.value,
+        discription: eventdescription.value,
+        seats: eventseatsn.value,
+        price: eventprice.value,
+        variantrow: variants
+       
     }
-
-     
+   
+     console.log();
 
 
     events.push(event);
-  
+    addeventtolist(events);
    document.getElementById('event-form').reset();
 }
 document.getElementById('event-form').addEventListener('submit', handleFormSubmit);
-
+//add variant function 
 function addVariantRow() {
-    // TODO:
-    // 1. Clone .variant-row template
-    // 2. Append to #variants-list
-    // 3. Add remove listener to new row's remove button
+   
 const variantslist =document.querySelector('#variants-list');
 variantslist.innerHTML+=`
     <div class="variant-row">
@@ -198,13 +190,31 @@ variantrow__remove.forEach(variantremove =>{
 
 }
 document.getElementById('btn-add-variant').addEventListener('click', addVariantRow);
-
+// remove variant funcution 
 function removeVariantRow() {
-    // TODO:
-    // Find closest .variant-row and remove it
     const variantrow__remove =document.querySelector('.variant-row__remove')
     variantrow__remove.parentElement.remove();
 }
+// add event to event list 
+function addeventtolist(evnts){
+   const tablebody =document.querySelector('.table__body');
+   console.log(evnts[(evnts.length)-1].title);
 
-
+    
+      tablebody.innerHTML+=`
+    <tr class="table__row" data-event-id="1">
+         <td>1</td>
+        <td>${evnts[(evnts.length)-1].title}</td>
+         <td>${evnts[(evnts.length)-1].seats}</td>
+         <td>$${evnts[(evnts.length)-1].price}</td>
+        <td><span class="badge">${evnts[(evnts.length)-1]. variantrow.length}</span></td>
+         <td>
+            <button class="btn btn--small" data-action="details" data-event-id="1">Details</button>
+            <button class="btn btn--small" data-action="edit" data-event-id="1">Edit</button>
+            <button class="btn btn--danger btn--small" data-action="archive" data-event-id="1">Delete</button>
+        </td>
+     </tr> 
+   `
+  
+}
 
