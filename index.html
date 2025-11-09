@@ -17,7 +17,7 @@
 
             <nav class="sidebar__nav">
                 <!-- Screen buttons (students will add JS to handle click + switch screens) -->
-                <button class="sidebar__btn is-active" data-screen="stats">
+                <button class="sidebar__btn is-active" data-screen="stats" id="stats-btn">
                     <span class="sidebar__icon">📊</span>
                     <span class="sidebar__label">Statistics</span>
                 </button>
@@ -27,7 +27,7 @@
                     <span class="sidebar__label">Add Event</span>
                 </button>
 
-                <button class="sidebar__btn" data-screen="list">
+                <button class="sidebar__btn" data-screen="list" id="sidebar-btn">
                     <span class="sidebar__icon">📋</span>
                     <span class="sidebar__label">Events</span>
                 </button>
@@ -162,8 +162,8 @@
                                 <!-- Variant rows will be appended here by JS -->
                                 <div id="variants-list" class="variants__list">
                                     <!-- EXAMPLE: Students should clone this structure -->
-                                    <!-- 
-                                    <div class="variant-row">
+                                    
+                                    <!-- <div class="variant-row">
                                         <input type="text" class="input variant-row__name" placeholder="Variant name (e.g., 'Early Bird')" />
                                         <input type="number" class="input variant-row__qty" placeholder="Qty" min="1" />
                                         <input type="number" class="input variant-row__value" placeholder="Value" step="0.01" />
@@ -172,8 +172,8 @@
                                             <option value="percentage">Percentage Off</option>
                                         </select>
                                         <button type="button" class="btn btn--danger btn--small variant-row__remove">Remove</button>
-                                    </div>
-                                    -->
+                                    </div> -->
+                                   
                                 </div>
                             </fieldset>
 
@@ -220,8 +220,8 @@
                             </thead>
                             <tbody class="table__body">
                                 <!-- EXAMPLE: Students will populate this with JS -->
-                                <!-- 
-                                <tr class="table__row" data-event-id="1">
+                                
+                                 <!-- <tr class="table__row" data-event-id="1">
                                     <td>1</td>
                                     <td>Summer Festival</td>
                                     <td>100</td>
@@ -232,8 +232,8 @@
                                         <button class="btn btn--small" data-action="edit" data-event-id="1">Edit</button>
                                         <button class="btn btn--danger btn--small" data-action="archive" data-event-id="1">Delete</button>
                                     </td>
-                                </tr>
-                                -->
+                                </tr>  -->
+                               
                             </tbody>
                         </table>
 
