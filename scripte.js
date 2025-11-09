@@ -270,3 +270,15 @@ let contur=1;
 }
 
 const statsbtn=document.getElementById("stats-btn").addEventListener('click',renderStats);
+
+
+function searchEvents(query) {
+   
+    let eventfilter;
+    eventfilter=events.filter(evt=>evt.title.toLowerCase().includes(query.toLowerCase()));
+    eventlist(eventfilter);
+}
+document.getElementById("search-events").addEventListener('input',()=>{
+    const query=document.getElementById("search-events").value;
+    searchEvents(query);
+});
