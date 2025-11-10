@@ -47,6 +47,7 @@ let archive = [];
 }
  switchScreen();
 // validation function 
+let contur=1;
  function handleFormSubmit(e) {
     
     e.preventDefault();
@@ -166,6 +167,7 @@ let archive = [];
           }
      }
     const event ={
+        id: contur,
         title: eventtitle.value,
         image: eventimage.value,
         discription: eventdescription.value,
@@ -181,6 +183,7 @@ let archive = [];
     events.push(event);
    
    document.getElementById('event-form').reset();
+      contur++;
 }
 document.getElementById('event-form').addEventListener('submit', handleFormSubmit);
 //add variant function 
@@ -221,11 +224,11 @@ function eventlist(evnts){
    const tablebody =document.querySelector('.table__body');
    console.log("hloo");
 tablebody.innerHTML='';
-let contur=1;
+
  evnts.forEach(evt =>{
       tablebody.innerHTML+=`
     <tr class="table__row" data-event-id="1">
-         <td>${contur}</td>
+         <td>${evt.id}</td>
         <td>${evt.title}</td>
          <td>${evt.seats}</td>
          <td>$${evt.price}</td>
@@ -237,7 +240,7 @@ let contur=1;
         </td>
      </tr> 
    `
-   contur++;
+  
  })
   
 }
@@ -271,7 +274,7 @@ let contur=1;
 
 const statsbtn=document.getElementById("stats-btn").addEventListener('click',renderStats);
 
-
+//searchEvents function 
 function searchEvents(query) {
    
     let eventfilter;
@@ -282,3 +285,45 @@ document.getElementById("search-events").addEventListener('input',()=>{
     const query=document.getElementById("search-events").value;
     searchEvents(query);
 });
+//handleTableActionClick function
+function handleTableActionClick(e) {
+    if(e.target.dataset.action=="details"){
+       let eventId= e.target.parentElement.parentElement.firstElementChild.textContent;
+       showEventDetails(eventId);
+    
+    }
+     if(e.target.dataset.action=="edit"){
+        
+    }
+     if(e.target.dataset.action=="archive"){
+        
+    }
+}
+document.getElementById('events-table').addEventListener('click', handleTableActionClick)
+// showEventDetails function
+function showEventDetails(eventId) {
+   
+    const event=events.find((evt)=>evt.id==eventId);
+    const modalbody=document.getElementById("modal-body");
+    let contenu='';
+    for(evt of event.variantrow){
+        contenu+="name:&nbsp;"+evt.varianttiile+"&nbsp;&nbsp;&nbsp;&nbsp;Quntité:&nbsp;"+evt.varianQty+"&nbsp;&nbsp;&nbsp;&nbsp;value:&nbsp;"+evt.variantvalue+"&nbsp;&nbsp;&nbsp;&nbsp;type:&nbsp;"+evt.varianttype+"<br>" 
+    }
+    modalbody.innerHTML=`
+            id: ${event.id}<br>
+            title:  ${event.title}<br>
+            image:  ${event.image}<br>
+            description: ${event.discription}<br>
+            seats:  ${event.seats}<br>
+            price:  ${event.price}<br>
+            variants:<br>
+            ${contenu}    
+            
+    ` 
+    console.log(event.variantrow);
+document.getElementById("event-modal").classList.remove('is-hidden');
+document.querySelector('.modal__close').addEventListener('click',()=>{
+document.getElementById("event-modal").classList.add('is-hidden');
+})
+
+}
