@@ -221,8 +221,8 @@ function removeVariantRow() {
 //event list funtion 
 
 function eventlist(evnts){
-   const tablebody =document.querySelector('.table__body');
-   console.log("hloo");
+   const tablebody =document.querySelector('#events-table tbody');
+  
 tablebody.innerHTML='';
 
  evnts.forEach(evt =>{
@@ -293,37 +293,91 @@ function handleTableActionClick(e) {
     
     }
      if(e.target.dataset.action=="edit"){
+
         
     }
      if(e.target.dataset.action=="archive"){
+         let eventId= e.target.parentElement.parentElement.firstElementChild.textContent;
+       archiveEvent(eventId);
         
     }
 }
 document.getElementById('events-table').addEventListener('click', handleTableActionClick)
 // showEventDetails function
 function showEventDetails(eventId) {
+    let  event1;
+    events.forEach(evt=>{
+        if(evt.id==eventId){
+     event1=evt;
+            
+        }
+    })
    
-    const event=events.find((evt)=>evt.id==eventId);
+    // const event=events.find((evt)=>evt.id==eventId);
     const modalbody=document.getElementById("modal-body");
     let contenu='';
-    for(evt of event.variantrow){
+    for(evt of event1.variantrow){
         contenu+="name:&nbsp;"+evt.varianttiile+"&nbsp;&nbsp;&nbsp;&nbsp;Quntité:&nbsp;"+evt.varianQty+"&nbsp;&nbsp;&nbsp;&nbsp;value:&nbsp;"+evt.variantvalue+"&nbsp;&nbsp;&nbsp;&nbsp;type:&nbsp;"+evt.varianttype+"<br>" 
     }
     modalbody.innerHTML=`
-            id: ${event.id}<br>
-            title:  ${event.title}<br>
-            image:  ${event.image}<br>
-            description: ${event.discription}<br>
-            seats:  ${event.seats}<br>
-            price:  ${event.price}<br>
+            id: ${event1.id}<br>
+            title:  ${event1.title}<br>
+            image:  ${event1.image}<br>
+            description: ${event1.discription}<br>
+            seats:  ${event1.seats}<br>
+            price:  $${event1.price}<br>
             variants:<br>
             ${contenu}    
             
     ` 
-    console.log(event.variantrow);
+    console.log(event1.variantrow);
 document.getElementById("event-modal").classList.remove('is-hidden');
 document.querySelector('.modal__close').addEventListener('click',()=>{
 document.getElementById("event-modal").classList.add('is-hidden');
 })
 
 }
+//archiveEvent function 
+
+function archiveEvent(eventId) {
+   
+     let  event1;
+    events.forEach(evt=>{
+        if(evt.id==eventId){
+     event1=evt;
+            
+        }
+    })
+    archive.push(event1);
+    const index = events.indexOf(event1);
+
+if (index > -1) { 
+  events.splice(index, 1);
+  eventlist(events); 
+}
+}
+//showeventsarchive function 
+function showeventsarchive(archive){
+   const tablebody =document.querySelector('#archive-table tbody');
+   
+tablebody.innerHTML='';
+
+ archive.forEach(evt =>{
+    console.log("hloo");
+      tablebody.innerHTML+=`
+    <tr class="table__row" data-event-id="1">
+        <td>${evt.id}</td>
+         <td>${evt.title}</td>
+        <td>${evt.seats}</td>
+        <td>$${evt.price}</td>
+        <td>
+          <button class="btn btn--small" data-action="restore" data-event-id="1">Restore</button>
+        </td>
+    </tr>
+   `
+ })
+  
+}
+document.getElementById('archive-btn').addEventListener('click',()=>{
+    showeventsarchive(archive);
+ });
