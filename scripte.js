@@ -50,12 +50,18 @@ let archive = [];
 let contur=1;
  function handleFormSubmit(e){
   e.preventDefault();
+const btnedit=document.querySelector('.btn--primary')
+if(btnedit.textContent!="Edit"){
     let event=validationevent();
     if(event){
+         
+   
+        
     events.push(event);
       contur++;
+        }
+    
     }
-     console.log( events.length);
 }
 //validationevent function
 function validationevent(){
@@ -142,7 +148,7 @@ function validationevent(){
              document.querySelector('#form-errors').classList.add('is-hidden');
         },3000
         ) 
-        console.log("truve");
+        
        return;
 
        }
@@ -189,7 +195,7 @@ function validationevent(){
     document.getElementById('event-form').reset();
     return event;
 }
-document.getElementById('event-form').addEventListener('submit', handleFormSubmit);
+document.querySelector('.btn--primary').addEventListener('click', handleFormSubmit);
 //add variant function 
 function addVariantRow() {
    
@@ -335,7 +341,7 @@ function showEventDetails(eventId) {
             ${contenu}    
             
     ` 
-    console.log(event1.variantrow);
+    
 document.getElementById("event-modal").classList.remove('is-hidden');
 document.querySelector('.modal__close').addEventListener('click',()=>{
 document.getElementById("event-modal").classList.add('is-hidden');
@@ -344,25 +350,23 @@ document.getElementById("event-modal").classList.add('is-hidden');
 }
 //archiveEvent function 
 
-function archiveEvent(eventId) {
-   
+function archiveEvent(eventId){
+      let even;
      let  event1;
-    events.forEach(evt=>{
+     events.forEach(evt=>{
         if(evt.id==eventId){
-     event1=evt;
-            
+         even=evt;
+           
         }
     })
-    archive.push(event1);
-    const index = events.indexOf(event1);
+     event1=events.filter((evt)=>
+        evt.id!=eventId
+    )
+    events=event1;
 
-if (index > -1) { 
-    for(let i=index ;i<events.length;i++){
-        events[index]=events[index+1];
-    }
-    events--;
+archive.push(even);
   eventlist(events); 
-}
+
 }
 //showeventsarchive function 
 function showeventsarchive(archive){
@@ -371,7 +375,7 @@ function showeventsarchive(archive){
 tablebody.innerHTML='';
 
  archive.forEach(evt =>{
-    console.log("hloo");
+   
       tablebody.innerHTML+=`
     <tr class="table__row" data-event-id="1">
         <td>${evt.id}</td>
@@ -391,30 +395,26 @@ document.getElementById('archive-btn').addEventListener('click',()=>{
  });
  //editEvent function 
  function editEvent(eventId){
-    // TODO:
-    // 1. Find event by id
-    // 2. Populate form fields with event data
-    // 3. Switch to 'add' screen
-    // 4. On submit, update existing event instead of creating new
+   
     let  event1;
     events.forEach(evt=>{
         if(evt.id==eventId){
-     event1=evt;
+     index=events.indexOf(evt);
             
         }
     })
     const form=document.querySelector('.form');
-    form.querySelector('#event-title').value=event1.title;
-    form.querySelector('#event-seats').value=event1.seats;
-    form.querySelector('#event-description').value=event1.discription;
-    form.querySelector('#event-price').value=event1.price;
-    form.querySelector('#event-image').value=event1.image;
-    if(event1.variantrow){
-        event1.variantrow.forEach((evt,index)=>{
-           form.querySelectorAll('.variant-row__name')[index].value=evt.varianttiile;
-           form.querySelectorAll('.variant-row__qty')[index].value=evt.varianQty;
-           form.querySelectorAll('.variant-row__value')[index].value=evt.variantvalue;
-           form.querySelectorAll('.variant-row__type')[index].value=evt.varianttype;
+    form.querySelector('#event-title').value=events[index].title;
+    form.querySelector('#event-seats').value=events[index].seats;
+    form.querySelector('#event-description').value=events[index].discription;
+    form.querySelector('#event-price').value=events[index].price;
+    form.querySelector('#event-image').value=events[index].image;
+    if(events[index].variantrow){
+        events[index].variantrow.forEach((evt,ind)=>{
+           form.querySelectorAll('.variant-row__name')[ind].value=evt.varianttiile;
+           form.querySelectorAll('.variant-row__qty')[ind].value=evt.varianQty;
+           form.querySelectorAll('.variant-row__value')[ind].value=evt.variantvalue;
+           form.querySelectorAll('.variant-row__type')[ind].value=evt.varianttype;
            
         })
     }
@@ -424,41 +424,30 @@ document.getElementById('archive-btn').addEventListener('click',()=>{
    screen.children[1].classList.add("is-visible");
    const btnedit=document.querySelector('.btn--primary')
    btnedit.textContent="Edit";
-   document.getElementById('event-form').removeEventListener('submit', handleFormSubmit);
-   document.getElementById('event-form').addEventListener('submit',()=>{
-     editEventvalidation(event1)
+  document.querySelector('.btn--primary').addEventListener('click',()=>{
+   
+    if(btnedit.textContent=="Edit"){
+     editEventvalidation(index)
+    }
 
    })
 
-
 }
 //editEventvalidation function 
-function editEventvalidation(event1){
+function editEventvalidation(index){
     let event=validationevent();
+    
      if(event){
-    event1.title=event.title;
-    event1.seats=event.seats;
-    event1.discription=event.discription;
-    event1.price=event.price;
-    event1.image=event.image;
-    if(event.variantrow){
-        event.variantrow.forEach((evt)=>{
-              event1.variantrow.varianttiile=evt.varianttiile;
-              event1.variantrow.varianQty=evt.varianQty;
-              event1.variantrow.variantvalue=evt.variantvalue;
-              event1.variantrow.varianttype=evt.varianttype;
-           
-        })
-    }
-    // document.getElementById('event-form').addEventListener('submit', handleFormSubmit);
+        event.id= events[index].id;
+        events[index]=event;
+
+
     const btnedit=document.querySelector('.btn--primary')
-    //  document.getElementById('event-form').removeEventListener('submit',()=>{
-    //  editEventvalidation(event1)})
-     
    btnedit.textContent="Create Event";
     const screen=document.querySelector('.screens');
    screen.children[1].classList.remove("is-visible");
    screen.children[2].classList.add("is-visible");
      }
+      eventlist(events); 
 
 }
