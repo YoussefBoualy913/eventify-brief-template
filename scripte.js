@@ -48,9 +48,18 @@ let archive = [];
  switchScreen();
 // validation function 
 let contur=1;
- function handleFormSubmit(e) {
+ function handleFormSubmit(e){
+  e.preventDefault();
+    let event=validationevent();
+    if(event){
+    events.push(event);
+      contur++;
+    }
+     console.log( events.length);
+}
+//validationevent function
+function validationevent(){
     
-    e.preventDefault();
     const eventtitle =document.querySelector('#event-title');
     const eventimage =document.querySelector('#event-image');
     const eventdescription =document.querySelector('#event-description');
@@ -62,6 +71,7 @@ let contur=1;
     const regexseatsn=/^[1-9]\d*$/
     const regexprice=/^(0|[1-9]\d*)(\.\d{1,2})?$/
     const regexvariantrowvalue=/^-?(0|[1-9]\d*)(\.\d+)?$/
+    
     
     if(!regextitle.test(eventtitle.value)){
         document.querySelector('#form-errors').innerHTML="title invalide";
@@ -115,7 +125,7 @@ let contur=1;
         return;
 
     }
-     let variants=[];
+    let variants=[];
      const variantrow =document.querySelectorAll('.variant-row');
      for(const varint of variantrow){
         
@@ -173,17 +183,11 @@ let contur=1;
         discription: eventdescription.value,
         seats: eventseatsn.value,
         price: eventprice.value,
-        variantrow: variants
-       
+        variantrow:variants
+
     }
-   
-     console.log();
-
-
-    events.push(event);
-   
-   document.getElementById('event-form').reset();
-      contur++;
+    document.getElementById('event-form').reset();
+    return event;
 }
 document.getElementById('event-form').addEventListener('submit', handleFormSubmit);
 //add variant function 
@@ -232,7 +236,7 @@ tablebody.innerHTML='';
         <td>${evt.title}</td>
          <td>${evt.seats}</td>
          <td>$${evt.price}</td>
-        <td><span class="badge">${evt. variantrow.length}</span></td>
+        <td><span class="badge">${evt.variantrow.length}</span></td>
          <td>
             <button class="btn btn--small" data-action="details" data-event-id="1">Details</button>
             <button class="btn btn--small" data-action="edit" data-event-id="1">Edit</button>
@@ -293,7 +297,8 @@ function handleTableActionClick(e) {
     
     }
      if(e.target.dataset.action=="edit"){
-
+        let eventId= e.target.parentElement.parentElement.firstElementChild.textContent;
+         editEvent(eventId);
         
     }
      if(e.target.dataset.action=="archive"){
@@ -313,7 +318,7 @@ function showEventDetails(eventId) {
         }
     })
    
-    // const event=events.find((evt)=>evt.id==eventId);
+    
     const modalbody=document.getElementById("modal-body");
     let contenu='';
     for(evt of event1.variantrow){
@@ -352,7 +357,10 @@ function archiveEvent(eventId) {
     const index = events.indexOf(event1);
 
 if (index > -1) { 
-  events.splice(index, 1);
+    for(let i=index ;i<events.length;i++){
+        events[index]=events[index+1];
+    }
+    events--;
   eventlist(events); 
 }
 }
@@ -381,3 +389,76 @@ tablebody.innerHTML='';
 document.getElementById('archive-btn').addEventListener('click',()=>{
     showeventsarchive(archive);
  });
+ //editEvent function 
+ function editEvent(eventId){
+    // TODO:
+    // 1. Find event by id
+    // 2. Populate form fields with event data
+    // 3. Switch to 'add' screen
+    // 4. On submit, update existing event instead of creating new
+    let  event1;
+    events.forEach(evt=>{
+        if(evt.id==eventId){
+     event1=evt;
+            
+        }
+    })
+    const form=document.querySelector('.form');
+    form.querySelector('#event-title').value=event1.title;
+    form.querySelector('#event-seats').value=event1.seats;
+    form.querySelector('#event-description').value=event1.discription;
+    form.querySelector('#event-price').value=event1.price;
+    form.querySelector('#event-image').value=event1.image;
+    if(event1.variantrow){
+        event1.variantrow.forEach((evt,index)=>{
+           form.querySelectorAll('.variant-row__name')[index].value=evt.varianttiile;
+           form.querySelectorAll('.variant-row__qty')[index].value=evt.varianQty;
+           form.querySelectorAll('.variant-row__value')[index].value=evt.variantvalue;
+           form.querySelectorAll('.variant-row__type')[index].value=evt.varianttype;
+           
+        })
+    }
+
+   const screen=document.querySelector('.screens');
+   screen.children[2].classList.remove("is-visible");
+   screen.children[1].classList.add("is-visible");
+   const btnedit=document.querySelector('.btn--primary')
+   btnedit.textContent="Edit";
+   document.getElementById('event-form').removeEventListener('submit', handleFormSubmit);
+   document.getElementById('event-form').addEventListener('submit',()=>{
+     editEventvalidation(event1)
+
+   })
+
+
+}
+//editEventvalidation function 
+function editEventvalidation(event1){
+    let event=validationevent();
+     if(event){
+    event1.title=event.title;
+    event1.seats=event.seats;
+    event1.discription=event.discription;
+    event1.price=event.price;
+    event1.image=event.image;
+    if(event.variantrow){
+        event.variantrow.forEach((evt)=>{
+              event1.variantrow.varianttiile=evt.varianttiile;
+              event1.variantrow.varianQty=evt.varianQty;
+              event1.variantrow.variantvalue=evt.variantvalue;
+              event1.variantrow.varianttype=evt.varianttype;
+           
+        })
+    }
+    // document.getElementById('event-form').addEventListener('submit', handleFormSubmit);
+    const btnedit=document.querySelector('.btn--primary')
+    //  document.getElementById('event-form').removeEventListener('submit',()=>{
+    //  editEventvalidation(event1)})
+     
+   btnedit.textContent="Create Event";
+    const screen=document.querySelector('.screens');
+   screen.children[1].classList.remove("is-visible");
+   screen.children[2].classList.add("is-visible");
+     }
+
+}
