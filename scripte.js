@@ -295,8 +295,8 @@ document.getElementById("search-events").addEventListener('input',()=>{
     const query=document.getElementById("search-events").value;
     searchEvents(query);
 });
-//handleTableActionClick function
-function handleTableActionClick(e) {
+//handleTableeventsActionClick function
+function handleTableeventsActionClick(e) {
     if(e.target.dataset.action=="details"){
        let eventId= e.target.parentElement.parentElement.firstElementChild.textContent;
        showEventDetails(eventId);
@@ -313,7 +313,7 @@ function handleTableActionClick(e) {
         
     }
 }
-document.getElementById('events-table').addEventListener('click', handleTableActionClick)
+document.getElementById('events-table').addEventListener('click', handleTableeventsActionClick)
 // showEventDetails function
 function showEventDetails(eventId) {
     let  event1;
@@ -449,5 +449,33 @@ function editEventvalidation(index){
    screen.children[2].classList.add("is-visible");
      }
       eventlist(events); 
+
+}
+function handleTablearchiveActionClick(e) {
+    
+     if(e.target.dataset.action=="restore"){
+       let eventId= e.target.parentElement.parentElement.firstElementChild.textContent;
+       restoreEvent(eventId);
+    
+    }
+}
+document.getElementById('archive-table').addEventListener('click',handleTablearchiveActionClick)
+function restoreEvent(eventId){
+      let even;
+     let  event1;
+     archive.forEach(evt=>{
+        if(evt.id==eventId){
+         even=evt;
+           
+        }
+    })
+     event1=archive.filter((evt)=>
+        evt.id!=eventId
+    )
+    archive=event1;
+
+
+events.push(even);
+  showeventsarchive(archive); 
 
 }
