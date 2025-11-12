@@ -1,6 +1,7 @@
 let events = [];
 let archive = [];
- 
+
+let contur;
 // Save/load from localStorage
 function loadData() {
     // TODO: Load events and archive from localStorage
@@ -21,18 +22,26 @@ function saveData() {
 }
 // INITIALIZATION
 function init() {
-    // TODO:
-    // 1. Load data from localStorage
-    // 2. Render initial screen (statistics)
-    // 3. Set up all event listeners
-    // 4. Call renderStats(), renderEventsTable(), renderArchiveTable()
    loadData() ;
    renderStats();
    eventlist(events);
    showeventsarchive(archive);
-
+   let maxid=0;
+console.log(events);
+events.forEach(et=>{
+    if(et.id>maxid){
+        maxid=et.id;
+    }
+})
+archive.forEach(et=>{
+    if(et.id>maxid){
+        maxid=et.id;
+    }
+})
+contur=maxid+1;
 }
 document.addEventListener('DOMContentLoaded', init);
+
 // switchScreen function 
    function switchScreen(){
    const btn=document.querySelectorAll('.sidebar__btn')
@@ -80,7 +89,7 @@ document.addEventListener('DOMContentLoaded', init);
 }
  switchScreen();
 // validation function 
-let contur=1;
+
  function handleFormSubmit(e){
   e.preventDefault();
 const btnedit=document.querySelector('.btn--primary')
@@ -256,9 +265,8 @@ variantrow__remove.forEach(variantremove =>{
 }
 document.getElementById('btn-add-variant').addEventListener('click', addVariantRow);
 // remove variant funcution 
-function removeVariantRow() {
-    const variantrow__remove =document.querySelector('.variant-row__remove')
-    variantrow__remove.parentElement.remove();
+function removeVariantRow(e) {
+    e.target.parentElement.remove();
 }
 
 //event list funtion 
@@ -339,6 +347,7 @@ function handleTableeventsActionClick(e) {
     }
      if(e.target.dataset.action=="edit"){
         let eventId= e.target.parentElement.parentElement.firstElementChild.textContent;
+        console.log(eventId);
          editEvent(eventId);
         
     }
@@ -441,19 +450,37 @@ document.getElementById('archive-btn').addEventListener('click',()=>{
         }
     })
     const form=document.querySelector('.form');
+    const variantslist =document.querySelector('#variants-list');
     form.querySelector('#event-title').value=events[index].title;
     form.querySelector('#event-seats').value=events[index].seats;
     form.querySelector('#event-description').value=events[index].discription;
     form.querySelector('#event-price').value=events[index].price;
     form.querySelector('#event-image').value=events[index].image;
     if(events[index].variantrow){
-        events[index].variantrow.forEach((evt,ind)=>{
-           form.querySelectorAll('.variant-row__name')[ind].value=evt.varianttiile;
-           form.querySelectorAll('.variant-row__qty')[ind].value=evt.varianQty;
-           form.querySelectorAll('.variant-row__value')[ind].value=evt.variantvalue;
-           form.querySelectorAll('.variant-row__type')[ind].value=evt.varianttype;
+        variantslist.innerHTML='';
+        events[index].variantrow.forEach((evt)=>{
+        //    form.querySelectorAll('.variant-row__name')[i].value=evt.varianttiile;
+        //    form.querySelectorAll('.variant-row__qty')[i].value=evt.varianQty;
+        //    form.querySelectorAll('.variant-row__value')[i].value=evt.variantvalue;
+        //    form.querySelectorAll('.variant-row__type')[i].value=evt.varianttype;
+        variantslist.innerHTML+=`
+    <div class="variant-row">
+     <input type="text" class="input variant-row__name" value="${evt.varianttiile}" placeholder="Variant name (e.g., 'Early Bird')" />
+     <input type="number" class="input variant-row__qty" value="${evt.varianQty}" placeholder="Qty" min="1" />
+     <input type="number" class="input variant-row__value" value="${evt.variantvalue}" placeholder="Value" step="0.01" />
+     <select class="select variant-row__type" value="${evt.varianttype}">
+         <option value="fixed">Fixed Price</option>
+         <option value="percentage">Percentage Off</option>
+     </select>
+      <button type="button" class="btn btn--danger btn--small variant-row__remove">Remove</button>
+</div> 
+`
            
         })
+        document.querySelectorAll('.variant-row__remove').forEach(variantremove =>{
+      variantremove.addEventListener('click', removeVariantRow);
+
+})
     }
 
    const screen=document.querySelector('.screens');
@@ -485,6 +512,8 @@ function editEventvalidation(index){
    screen.children[1].classList.remove("is-visible");
    screen.children[2].classList.add("is-visible");
      }
+      saveData();
+      loadData() ;
       eventlist(events); 
 
 }
@@ -519,3 +548,91 @@ events.push(even);
    loadData() ;
 
 }
+//sortEvents function 
+function sortEvents(eventList, sortType) {
+
+const choix=sortType;
+ let tem={};
+switch(choix){
+ case "title-asc" :
+  
+    for(let i=0;i<eventList.length-1;i++){
+        for(let j=0;j<eventList.length-1-i;j++){
+            
+            
+            if(eventList[j].title.toLowerCase()>eventList[j+1].title.toLowerCase()){
+
+                tem=eventList[j];
+                eventList[j]=eventList[j+1];
+                eventList[j+1]=tem;
+            }
+        }
+    }
+    break;
+    case "title-desc":
+     for(let i=0;i<eventList.length-1;i++){
+        for(let j=0;j<eventList.length-1-i;j++){
+            
+            
+            if(eventList[j].title.toLowerCase()<eventList[j+1].title.toLowerCase()){
+
+                tem=eventList[j];
+                eventList[j]=eventList[j+1];
+                eventList[j+1]=tem;
+            }
+        }
+    }
+    break;
+     case "price-asc":
+    for(let i=0;i<eventList.length-1;i++){
+        for(let j=0;j<eventList.length-1-i;j++){
+            
+            
+            if(eventList[j].price>eventList[j+1].price){
+
+                tem=eventList[j];
+                eventList[j]=eventList[j+1];
+                eventList[j+1]=tem;
+            }
+        }
+    }
+    break;
+     case "price-desc":
+    for(let i=0;i<eventList.length-1;i++){
+        for(let j=0;j<eventList.length-1-i;j++){
+            
+            
+            if(eventList[j].price<eventList[j+1].price){
+
+                tem=eventList[j];
+                eventList[j]=eventList[j+1];
+                eventList[j+1]=tem;
+            }
+        }
+    }
+    break;
+    case "seats-asc":
+    for(let i=0;i<eventList.length-1;i++){
+        for(let j=0;j<eventList.length-1-i;j++){
+            
+            
+            if(Number(eventList[j].seats)>Number(eventList[j+1].seats)){
+                
+                tem=eventList[j];
+                eventList[j]=eventList[j+1];
+                eventList[j+1]=tem;
+            }
+        }
+    }
+    
+    break;
+ }
+ return eventList;
+}
+ document.getElementById('sort-events').addEventListener('change', (e) => {
+    //  console.log(events);
+     const sorted = sortEvents(events, e.target.value)
+    //  console.log(sorted)
+    eventlist(sorted)
+ })
+
