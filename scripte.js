@@ -1,5 +1,38 @@
 let events = [];
 let archive = [];
+ 
+// Save/load from localStorage
+function loadData() {
+    // TODO: Load events and archive from localStorage
+    // JSON.parse(localStorage.getItem('events'))
+    if(JSON.parse(localStorage.getItem('events'))){
+        events=JSON.parse(localStorage.getItem('events'))
+    }
+    if(JSON.parse(localStorage.getItem('archive'))){
+    archive=JSON.parse(localStorage.getItem('archive'))}
+}
+
+
+function saveData() {
+    // TODO: Save events and archive to localStorage
+    // localStorage.setItem('events', JSON.stringify(events))
+    localStorage.setItem('events', JSON.stringify(events))
+    localStorage.setItem('archive', JSON.stringify(archive))
+}
+// INITIALIZATION
+function init() {
+    // TODO:
+    // 1. Load data from localStorage
+    // 2. Render initial screen (statistics)
+    // 3. Set up all event listeners
+    // 4. Call renderStats(), renderEventsTable(), renderArchiveTable()
+   loadData() ;
+   renderStats();
+   eventlist(events);
+   showeventsarchive(archive);
+
+}
+document.addEventListener('DOMContentLoaded', init);
 // switchScreen function 
    function switchScreen(){
    const btn=document.querySelectorAll('.sidebar__btn')
@@ -55,9 +88,9 @@ if(btnedit.textContent!="Edit"){
     let event=validationevent();
     if(event){
          
-   
-        
+     
     events.push(event);
+    saveData();
       contur++;
         }
     
@@ -234,7 +267,7 @@ function eventlist(evnts){
    const tablebody =document.querySelector('#events-table tbody');
   
 tablebody.innerHTML='';
-
+if(evnts){
  evnts.forEach(evt =>{
       tablebody.innerHTML+=`
     <tr class="table__row" data-event-id="1">
@@ -252,7 +285,7 @@ tablebody.innerHTML='';
    `
   
  })
-  
+}
 }
  document.getElementById('sidebar-btn').addEventListener('click',()=>{
     eventlist(events);
@@ -272,6 +305,7 @@ tablebody.innerHTML='';
 //add function renderStats
  function renderStats() {
     // Calculate from events array:
+    if(events){
     const totalEvents = events.length;
     const totalSeats = events.reduce((sum, e) => sum + Number(e.seats), 0);
     const totalPrice = events.reduce((sum, e) => sum + Number(e.price )*Number( e.seats), 0);
@@ -280,6 +314,7 @@ tablebody.innerHTML='';
     document.getElementById('stat-total-events').textContent =totalEvents;
     document.getElementById('stat-total-seats').textContent=totalSeats;
     document.getElementById('stat-total-price').textContent =totalPrice.toFixed(2);
+    }
 }
 
 const statsbtn=document.getElementById("stats-btn").addEventListener('click',renderStats);
@@ -365,15 +400,16 @@ function archiveEvent(eventId){
     events=event1;
 
 archive.push(even);
-  eventlist(events); 
-
+saveData();
+ loadData() ;
+ eventlist(events); 
 }
 //showeventsarchive function 
 function showeventsarchive(archive){
    const tablebody =document.querySelector('#archive-table tbody');
    
 tablebody.innerHTML='';
-
+ if(archive){
  archive.forEach(evt =>{
    
       tablebody.innerHTML+=`
@@ -388,6 +424,7 @@ tablebody.innerHTML='';
     </tr>
    `
  })
+}
   
 }
 document.getElementById('archive-btn').addEventListener('click',()=>{
@@ -460,6 +497,7 @@ function handleTablearchiveActionClick(e) {
     }
 }
 document.getElementById('archive-table').addEventListener('click',handleTablearchiveActionClick)
+//restoreEvent function 
 function restoreEvent(eventId){
       let even;
      let  event1;
@@ -477,5 +515,7 @@ function restoreEvent(eventId){
 
 events.push(even);
   showeventsarchive(archive); 
+  saveData();
+   loadData() ;
 
 }
