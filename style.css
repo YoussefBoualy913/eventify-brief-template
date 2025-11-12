@@ -252,7 +252,7 @@ h6 {
   background-color: var(--color-surface);
   border: 2px dashed var(--color-border);
   border-radius: var(--radius-lg);
-  padding: 120px var(--spacing-xl);
+  padding: 20px var(--spacing-xl);
   text-align: center;
   color: var(--color-text-muted);
 }

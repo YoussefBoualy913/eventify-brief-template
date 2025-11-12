@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Events Management App</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0"></script>
 </head> 
 <body>
     <div class="app">
@@ -79,7 +80,10 @@
 
                         <!-- Placeholder for chart (students can add Chart.js or similar) -->
                         <div class="chart-placeholder">
-                            <p class="text-muted">📈 Chart will be rendered here by JavaScript</p>
+                            <p  class="text-muted" >
+                                <canvas id="myChart" style="width:100%;"></canvas>
+                            </p>
+                             
                         </div>
                     </div>
                 </section>

@@ -26,6 +26,7 @@ function init() {
    renderStats();
    eventlist(events);
    showeventsarchive(archive);
+   showchart();
    let maxid=0;
 console.log(events);
 events.forEach(et=>{
@@ -311,22 +312,57 @@ if(evnts){
     )
  }
 //add function renderStats
+let totalEvents;
+let totalSeats;
+let totalPrice;
  function renderStats() {
     // Calculate from events array:
     if(events){
-    const totalEvents = events.length;
-    const totalSeats = events.reduce((sum, e) => sum + Number(e.seats), 0);
-    const totalPrice = events.reduce((sum, e) => sum + Number(e.price )*Number( e.seats), 0);
+     totalEvents = events.length;
+     totalSeats = events.reduce((sum, e) => sum + Number(e.seats), 0);
+     totalPrice = events.reduce((sum, e) => sum + Number(e.price )*Number( e.seats), 0);
     
     // Update DOM:
     document.getElementById('stat-total-events').textContent =totalEvents;
     document.getElementById('stat-total-seats').textContent=totalSeats;
-    document.getElementById('stat-total-price').textContent =totalPrice.toFixed(2);
+    document.getElementById('stat-total-price').textContent ='$'+totalPrice.toFixed(2);
     }
 }
 
-const statsbtn=document.getElementById("stats-btn").addEventListener('click',renderStats);
+const statsbtn=document.getElementById("stats-btn").addEventListener('click',()=>{
+     renderStats();
+    showchart();
+}
+   );
+//showchart function
+function showchart(){
+const xValues = ["Total Events", "Total Seats", "Total Revenue"];
+const yValues = [events.length, totalSeats, totalPrice];
+const barColors = ["lightgreen", "lightsalmon","lightblue"];
 
+const ctx = document.getElementById('myChart');
+
+new Chart(ctx, {
+  type: "bar",
+  data: {
+    labels: xValues,
+    datasets: [{
+      backgroundColor: barColors,
+      data: yValues
+    }]
+  },
+  options: {
+    plugins: {
+      legend: {display: false},
+      title: {
+        display: true,
+        text: "Chart of Statistics",
+        font: {size: 14}
+      }
+    }
+  }
+});
+}
 //searchEvents function 
 function searchEvents(query) {
    
