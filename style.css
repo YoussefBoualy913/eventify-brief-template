@@ -332,6 +332,7 @@ textarea.input {
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  
 }
 
 /* Primary Button */
@@ -917,4 +918,9 @@ textarea.input {
     padding: var(--spacing-xs) var(--spacing-sm);
     font-size: 13px;
   }
+}
+#affichimage{
+  /* display: flex;
+  justify-content: center; */
+  padding-top: 10px;
 }

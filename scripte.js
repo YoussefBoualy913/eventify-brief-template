@@ -4,8 +4,7 @@ let archive = [];
 let contur;
 // Save/load from localStorage
 function loadData() {
-    // TODO: Load events and archive from localStorage
-    // JSON.parse(localStorage.getItem('events'))
+
     if(JSON.parse(localStorage.getItem('events'))){
         events=JSON.parse(localStorage.getItem('events'))
     }
@@ -15,8 +14,6 @@ function loadData() {
 
 
 function saveData() {
-    // TODO: Save events and archive to localStorage
-    // localStorage.setItem('events', JSON.stringify(events))
     localStorage.setItem('events', JSON.stringify(events))
     localStorage.setItem('archive', JSON.stringify(archive))
 }
@@ -28,7 +25,6 @@ function init() {
    showeventsarchive(archive);
    showchart();
    let maxid=0;
-console.log(events);
 events.forEach(et=>{
     if(et.id>maxid){
         maxid=et.id;
@@ -59,7 +55,7 @@ document.addEventListener('DOMContentLoaded', init);
             screen.forEach(scre => {
                 scre.classList.remove("is-visible");
     });
-    screen.forEach(screenvisible => {
+    screen.forEach(screenvisible =>{
         if(btnsidebar.dataset.screen==screenvisible.dataset.screen){
             const pagetitle=document.querySelector('.page-title');
             const pagesubtitle=document.querySelector('.page-subtitle');
@@ -106,6 +102,19 @@ if(btnedit.textContent!="Edit"){
     
     }
 }
+//chowimage in form
+const imageafi=document.getElementById('event-image')
+imageafi.addEventListener('input',()=>{
+    console.log(imageafi.value);
+    if(imageafi.value){
+document.getElementById('affichimage').innerHTML=`
+<img src='${imageafi.value}' width="100px" height="100px">
+`
+    }
+    if(!imageafi.value){
+        document.getElementById('affichimage').innerHTML='';
+    }
+})
 //validationevent function
 function validationevent(){
     
@@ -316,13 +325,12 @@ let totalEvents;
 let totalSeats;
 let totalPrice;
  function renderStats() {
-    // Calculate from events array:
     if(events){
      totalEvents = events.length;
      totalSeats = events.reduce((sum, e) => sum + Number(e.seats), 0);
      totalPrice = events.reduce((sum, e) => sum + Number(e.price )*Number( e.seats), 0);
     
-    // Update DOM:
+    
     document.getElementById('stat-total-events').textContent =totalEvents;
     document.getElementById('stat-total-seats').textContent=totalSeats;
     document.getElementById('stat-total-price').textContent ='$'+totalPrice.toFixed(2);
@@ -407,8 +415,14 @@ function showEventDetails(eventId) {
     
     const modalbody=document.getElementById("modal-body");
     let contenu='';
+   
+    if(event1.variantrow){
     for(evt of event1.variantrow){
         contenu+="name:&nbsp;"+evt.varianttiile+"&nbsp;&nbsp;&nbsp;&nbsp;Quntité:&nbsp;"+evt.varianQty+"&nbsp;&nbsp;&nbsp;&nbsp;value:&nbsp;"+evt.variantvalue+"&nbsp;&nbsp;&nbsp;&nbsp;type:&nbsp;"+evt.varianttype+"<br>" 
+    }
+    }
+    if(event1.variantrow==''){
+       contenu="0";
     }
     modalbody.innerHTML=`
             id: ${event1.id}<br>
@@ -451,7 +465,7 @@ saveData();
 }
 //showeventsarchive function 
 function showeventsarchive(archive){
-   const tablebody =document.querySelector('#archive-table tbody');
+const tablebody =document.querySelector('#archive-table tbody');
    
 tablebody.innerHTML='';
  if(archive){
@@ -478,7 +492,6 @@ document.getElementById('archive-btn').addEventListener('click',()=>{
  //editEvent function 
  function editEvent(eventId){
    
-    let  event1;
     events.forEach(evt=>{
         if(evt.id==eventId){
      index=events.indexOf(evt);
@@ -495,10 +508,7 @@ document.getElementById('archive-btn').addEventListener('click',()=>{
     if(events[index].variantrow){
         variantslist.innerHTML='';
         events[index].variantrow.forEach((evt)=>{
-        //    form.querySelectorAll('.variant-row__name')[i].value=evt.varianttiile;
-        //    form.querySelectorAll('.variant-row__qty')[i].value=evt.varianQty;
-        //    form.querySelectorAll('.variant-row__value')[i].value=evt.variantvalue;
-        //    form.querySelectorAll('.variant-row__type')[i].value=evt.varianttype;
+       
         variantslist.innerHTML+=`
     <div class="variant-row">
      <input type="text" class="input variant-row__name" value="${evt.varianttiile}" placeholder="Variant name (e.g., 'Early Bird')" />
@@ -581,7 +591,7 @@ function restoreEvent(eventId){
 events.push(even);
   showeventsarchive(archive); 
   saveData();
-   loadData() ;
+  loadData();
 
 }
 //sortEvents function 
